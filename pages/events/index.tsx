@@ -1,10 +1,16 @@
 import EventList from "@/components/events/EventList";
 import EventsSearch from "@/components/events/EventsSearch";
-import { getAllEvents } from "@/dummy-data";
 import { useRouter } from "next/router";
+import fs from "fs/promises";
+import path from "path";
+import { GetServerSideProps } from "next";
+import { Event } from "..";
 
-const AllEventsPage = () => {
-  const events = getAllEvents();
+type Props = {
+  events: Event[];
+};
+
+const AllEventsPage = ({ events }: Props) => {
   const router = useRouter();
 
   const findEventsHandler = (
@@ -24,3 +30,13 @@ const AllEventsPage = () => {
 };
 
 export default AllEventsPage;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const filePath = path.join(process.cwd(), "data", "db.json");
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData.toString());
+
+  return {
+    props: { events: data.events },
+  };
+};

@@ -1,13 +1,23 @@
-import EventItem from "@/components/events/EventItem";
 import EventList from "@/components/events/EventList";
 import ResultsTitle from "@/components/events/results-title";
 import Button from "@/components/ui/Button";
 import ErrorAlert from "@/components/ui/error-alert";
-import { getFilteredEvents } from "@/dummy-data";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React from "react";
+import fs from "fs/promises";
+import path from "path";
+import { Event } from "..";
 
-const FilteredEventsPage = () => {
+type Slug = {
+  slug: string;
+};
+
+type Props = {
+  filteredEvents: Event[];
+};
+
+const FilteredEventsPage = ({ filteredEvents }: Props) => {
+  console.log(filteredEvents);
   const router = useRouter();
   const filteredData = router.query.slug;
 
@@ -35,11 +45,6 @@ const FilteredEventsPage = () => {
       </>
     );
 
-  const filteredEvents = getFilteredEvents({
-    year: filteredYear,
-    month: filteredMonth,
-  });
-
   if (filteredEvents.length === 0)
     return (
       <>
@@ -63,3 +68,28 @@ const FilteredEventsPage = () => {
 };
 
 export default FilteredEventsPage;
+
+const getData = async () => {
+  const filePath = path.join(process.cwd(), "data", "db.json");
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData.toString());
+  return data;
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { slug } = context.query as Slug;
+
+  const data = await getData();
+
+  let filteredEvents = data.events.filter((event: Event) => {
+    const eventDate = new Date(event.date);
+    return (
+      eventDate.getFullYear() === parseInt(slug[0]!) &&
+      eventDate.getMonth() === parseInt(slug[1]!) - 1
+    );
+  });
+
+  return {
+    props: { filteredEvents },
+  };
+};

@@ -1,8 +1,9 @@
 import EventItem from "./EventItem";
 import classes from "./event-list.module.css";
+import { Event } from "@/pages";
 
 type Props = {
-  items: Dummy[];
+  items: Event[];
 };
 
 const EventList = ({ items }: Props) => {
