@@ -2,6 +2,8 @@ import EventList from "@/components/events/EventList";
 import { GetStaticProps } from "next";
 import fs from "fs/promises";
 import path from "path";
+import Head from "next/head";
+import Header from "@/components/layout/Header";
 
 export type Event = {
   id: string;
@@ -21,6 +23,7 @@ type Props = {
 const HomePage = ({ events }: Props) => {
   return (
     <>
+      <Header title="Featured | Events" />
       <EventList items={events} />
     </>
   );

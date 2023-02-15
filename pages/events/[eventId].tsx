@@ -6,6 +6,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { Event } from "..";
+import Header from "@/components/layout/Header";
 
 type Params = {
   params: { eventId: string };
@@ -25,6 +26,7 @@ const DetailEventPage = ({ event }: Props) => {
 
   return (
     <>
+      <Header title={`${event.title} | Events`} />
       <EventSummary title={event.title} />
       <EventLogistics event={event} />
       <EventContent>

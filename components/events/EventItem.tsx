@@ -4,8 +4,8 @@ import AddressIcon from "../icons/address-icon";
 import ArrowRightIcon from "../icons/arrow-right-icon";
 
 import classes from "./event-item.module.css";
+import Image from "next/image";
 
-/* eslint-disable @next/next/no-img-element */
 type Props = {
   item: Dummy;
 };
@@ -21,7 +21,7 @@ const EventItem = ({ item }: Props) => {
 
   return (
     <li className={classes.item}>
-      <img src={"/" + item.image} width={50} alt={item.image} />
+      <Image src={"/" + item.image} width={250} height={160} alt={item.image} />
       <div className={classes.content}>
         <div className={classes.summary}>
           <h2>{item.title}</h2>

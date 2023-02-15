@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import path from "path";
 import { GetStaticProps } from "next";
 import { Event } from "..";
+import Header from "@/components/layout/Header";
 
 type Props = {
   events: Event[];
@@ -22,6 +23,7 @@ const AllEventsPage = ({ events }: Props) => {
 
   return (
     <>
+      <Header title="All | Events" />
       <EventsSearch onSearch={findEventsHandler} />
 
       <EventList items={events} />

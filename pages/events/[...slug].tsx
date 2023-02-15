@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import fs from "fs/promises";
 import path from "path";
 import { Event } from "..";
+import Header from "@/components/layout/Header";
 
 type Slug = {
   slug: string;
@@ -31,6 +32,7 @@ const FilteredEventsPage = ({ filteredEvents, hasError, date }: Props) => {
   if (hasError)
     return (
       <>
+        <Header title="Invalid Filter | Events" />
         <ErrorAlert>
           <p className="center">Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -43,6 +45,7 @@ const FilteredEventsPage = ({ filteredEvents, hasError, date }: Props) => {
   if (filteredEvents.length === 0)
     return (
       <>
+        <Header title="No Events | Events" />
         <ErrorAlert>
           <p>No Events for the chosen filter!</p>
         </ErrorAlert>
@@ -56,6 +59,7 @@ const FilteredEventsPage = ({ filteredEvents, hasError, date }: Props) => {
 
   return (
     <>
+      <Header title="Result | Events" />
       <ResultsTitle date={dates} />
       <EventList items={filteredEvents} />
     </>
