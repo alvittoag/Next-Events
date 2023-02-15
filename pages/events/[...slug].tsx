@@ -14,26 +14,21 @@ type Slug = {
 
 type Props = {
   filteredEvents: Event[];
+  hasError: boolean;
+  date: { year: number; month: number };
 };
 
-const FilteredEventsPage = ({ filteredEvents }: Props) => {
-  console.log(filteredEvents);
-  const router = useRouter();
-  const filteredData = router.query.slug;
+const FilteredEventsPage = ({ filteredEvents, hasError, date }: Props) => {
+  console.log(hasError);
+  // const router = useRouter();
+  // const filteredData = router.query.slug;
 
-  if (!filteredData) return <h1 className="center">Loading...</h1>;
+  // if (!filteredEvents) return <h1 className="center">Loading...</h1>;
 
-  const filteredYear = parseInt(filteredData[0]);
-  const filteredMonth = parseInt(filteredData[1]);
+  // const filteredYear = parseInt(filteredData[0]);
+  // const filteredMonth = parseInt(filteredData[1]);
 
-  if (
-    isNaN(filteredYear) ||
-    isNaN(filteredMonth) ||
-    filteredYear > 2030 ||
-    filteredYear < 2021 ||
-    filteredMonth < 1 ||
-    filteredMonth > 12
-  )
+  if (hasError)
     return (
       <>
         <ErrorAlert>
@@ -57,11 +52,11 @@ const FilteredEventsPage = ({ filteredEvents }: Props) => {
       </>
     );
 
-  const date = new Date(filteredYear, filteredMonth - 1);
+  const dates = new Date(date.year, date.month - 1);
 
   return (
     <>
-      <ResultsTitle date={date} />
+      <ResultsTitle date={dates} />
       <EventList items={filteredEvents} />
     </>
   );
@@ -81,15 +76,40 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const data = await getData();
 
+  const filteredYear = parseInt(slug[0]);
+  const filteredMonth = parseInt(slug[1]);
+
+  const year = +filteredYear;
+  const month = +filteredMonth;
+
+  if (
+    isNaN(filteredYear) ||
+    isNaN(filteredMonth) ||
+    filteredYear > 2030 ||
+    filteredYear < 2021 ||
+    filteredMonth < 1 ||
+    filteredMonth > 12
+  )
+    return {
+      props: { hasError: true },
+      // notFound: true
+    };
+
   let filteredEvents = data.events.filter((event: Event) => {
     const eventDate = new Date(event.date);
     return (
-      eventDate.getFullYear() === parseInt(slug[0]!) &&
-      eventDate.getMonth() === parseInt(slug[1]!) - 1
+      eventDate.getFullYear() === filteredYear &&
+      eventDate.getMonth() === filteredMonth - 1
     );
   });
 
   return {
-    props: { filteredEvents },
+    props: {
+      filteredEvents,
+      date: {
+        year,
+        month,
+      },
+    },
   };
 };

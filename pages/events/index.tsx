@@ -3,7 +3,7 @@ import EventsSearch from "@/components/events/EventsSearch";
 import { useRouter } from "next/router";
 import fs from "fs/promises";
 import path from "path";
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import { Event } from "..";
 
 type Props = {
@@ -31,12 +31,13 @@ const AllEventsPage = ({ events }: Props) => {
 
 export default AllEventsPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const filePath = path.join(process.cwd(), "data", "db.json");
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData.toString());
 
   return {
     props: { events: data.events },
+    revalidate: 10,
   };
 };

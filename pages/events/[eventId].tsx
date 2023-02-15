@@ -53,6 +53,7 @@ export const getStaticProps: GetStaticProps = async (contex) => {
 
   return {
     props: { event },
+    revalidate: 10,
   };
 };
 
